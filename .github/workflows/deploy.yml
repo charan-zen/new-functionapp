@@ -1,9 +1,9 @@
-name: Deploy Azure Function (Node.js)
+name: Deploy Azure Function (Node.js) using Azure CLI
 
 on:
   push:
     branches:
-      - main # Change to your branch if needed
+      - main # Change if using a different branch
 
 jobs:
   deploy:
@@ -20,13 +20,20 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Build (if needed)
+        run: npm run build # Remove if not needed
+
+      - name: Archive the Function App Code
+        run: zip -r functionapp.zip .
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy to Azure Function App
-        uses: Azure/functions-action@v1
-        with:
-          app-name: charanazclifunctionapp
-          package: .
+      - name: Deploy to Azure Function App using Azure CLI
+        run: |
+          az functionapp deployment source config-zip \
+            --resource-group ZenPOC \
+            --name charanazclifunctionapp \
+            --src functionapp.zip
