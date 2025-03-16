@@ -20,8 +20,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build (if needed)
-        run: npm run build # Remove if not needed
+      # Remove if not needed
 
       - name: Archive the Function App Code
         run: zip -r functionapp.zip .
